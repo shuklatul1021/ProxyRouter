@@ -3,9 +3,14 @@ import UserMiddleware from "../middleware/auth.js";
 import { success } from "zod";
 import { ChatGptModelRouter, ClaudeModelRouter, DeepseekModelRouter, GoogleDeepmindModelRouter, GrokModelRouter } from "../model/router.js";
 import type { RouterSchema } from "../types/type.js";
+import { VerifyApiMiddleware } from "../middleware/verifyAPI.js";
 const modelRouter = Router();
 
-modelRouter.post("/chat/:model", async (req, res) =>{
+modelRouter.post(
+    "/chat/:model", 
+    UserMiddleware, 
+    VerifyApiMiddleware, 
+    async (req, res) => {
     try{
         const aiModel = req.params.model;
         const { userPrompt , systemPrompt , modelVersion } = req.body;
