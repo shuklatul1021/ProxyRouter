@@ -1,4 +1,5 @@
-export const GenerateApiKey = () : String | null => {
+
+export const GenerateApiKey = () : string | null => {
     let api_key = "sk-pxy-api-";
     const word_count = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-";
     for(let i = 0; i < 48; i++){
