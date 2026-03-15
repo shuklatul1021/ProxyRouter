@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id              String          @id @default(uuid())
+  name            String?
+  companyName     String
+  username        String          @unique
+  email           String          @unique
+  password        String  
+  credit          Credit?
+  apikey          ApiKey[]
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+}
+
+model ApiKey {
+  id              String          @id @default(uuid())  
+  title           String
+  api_token       String
+  userId          String
+  user            User            @relation(fields: [userId], references: [id])
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+}
+model Credit {
+  id              String          @id @default(uuid())   
+  creditAmount    String
+  userId          String          @unique
+  usage           Usage[]          
+  user            User            @relation(fields: [userId], references: [id])   
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt         
+}
+
+model Usage {
+  id              String          @id @default(uuid())  
+  outputInput     String
+  outputToken     String
+  creditId        String          @unique
+  credit          Credit          @relation(fields: [creditId], references: [id])   
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt   
+}
