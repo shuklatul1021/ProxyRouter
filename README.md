@@ -1,159 +1,146 @@
-# Turborepo starter
+# ProxyRouter
 
-This Turborepo starter is maintained by the Turborepo core team.
+A unified API gateway for handling client requests across multiple LLM providers.
 
-## Using this example
+## Overview
 
-Run the following command:
+ProxyRouter is a monorepo project with:
 
-```sh
-npx create-turbo@latest
+- A backend API gateway that routes requests to different AI providers
+- Provider adapters for OpenAI, Anthropic, DeepSeek, Gemini, and Grok
+- User auth and API key generation endpoints
+- Shared database package powered by Prisma + PostgreSQL
+- A Next.js frontend dashboard/app shell
+
+## Core Features
+
+- Routing layer to select the correct AI model provider
+- Provider adapters for different LLM services
+- API key authentication and request validation
+- Usage tracking, logging, and rate limiting (foundation in place)
+- Scalable backend design for adding new providers easily
+
+## Monorepo Structure
+
+```
+open_router_version2/
+	apps/
+		backend/      # Express API gateway
+		frontend/     # Next.js app
+	packages/
+		store/        # Prisma schema + generated DB client
+		ui/           # Shared UI components
+		eslint-config/
+		typescript-config/
 ```
 
-## What's inside?
+## Tech Stack
 
-This Turborepo includes the following packages/apps:
+- Node.js + TypeScript
+- Turborepo + npm workspaces
+- Express (backend)
+- Next.js App Router (frontend)
+- Prisma + PostgreSQL (data layer)
 
-### Apps and Packages
+## Prerequisites
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+- Node.js 18+
+- npm 11+
+- PostgreSQL database
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+## Installation
 
-### Utilities
+From repository root:
 
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo build
+```bash
+npm install
 ```
 
-Without global `turbo`, use your package manager:
+## Environment Variables
 
-```sh
-cd my-turborepo
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+Create `apps/backend/.env` and set:
+
+```env
+PORT=3000
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/DB_NAME"
+JSON_WEB_TOKEN="your_jwt_secret"
+
+OPENAI_API_KEY="..."
+ANTHROPIC_API_KEY="..."
+DEEPSEEK_API_KEY="..."
+GEMINI_API_KEY="..."
+XAI_API_KEY="..."
 ```
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+## Database Setup (Prisma)
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+From repository root:
 
-```sh
-turbo build --filter=docs
+```bash
+npx prisma generate --schema packages/store/prisma/schema.prisma
+npx prisma migrate dev --schema packages/store/prisma/schema.prisma
 ```
 
-Without global `turbo`:
+## Run the Project
 
-```sh
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
+### Run all apps (recommended)
+
+From repository root:
+
+```bash
+npm run dev
 ```
 
-### Develop
+### Run backend only
 
-To develop all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo dev
+```bash
+cd apps/backend
+npm run dev
 ```
 
-Without global `turbo`, use your package manager:
+### Run frontend only
 
-```sh
-cd my-turborepo
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
+```bash
+cd apps/frontend
+npm run dev
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+## Useful Scripts
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+From repository root:
 
-```sh
-turbo dev --filter=web
-```
+- `npm run dev` — run workspace dev tasks
+- `npm run build` — build all workspaces via Turbo
+- `npm run lint` — run lint across workspaces
+- `npm run check-types` — run TypeScript checks across workspaces
+- `npm run format` — format TS/TSX/MD files
 
-Without global `turbo`:
+## Backend API (Current)
 
-```sh
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
+Base URL (local): `http://localhost:3000`
 
-### Remote Caching
+### Auth routes
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+- `POST /api/v1/auth/sign-up`
+- `POST /api/v1/auth/log-in`
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+### User/API key routes
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
+- `POST /api/v1/user/generate-api` (auth required)
+- `GET /api/v1/user/get-api` (auth required)
+- `GET /api/v1/user/get-user` (auth required)
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
+### Model routing route
 
-```sh
-cd my-turborepo
-turbo login
-```
+- `POST /api/v1/models/chat/:model`
+  - Supported model params: `chatgpt`, `claude`, `deepseek`, `googledeepmind`, `grok`
 
-Without global `turbo`, use your package manager:
+## Security Notes
 
-```sh
-cd my-turborepo
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
-```
+- Never commit `.env` or real provider API keys
+- Rotate keys immediately if exposed
+- GitHub push protection will block commits containing secrets
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+## Current Status
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo link
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+This project is actively evolving. Some features (especially complete usage metering/rate limiting and finalized model response shape) are under active development.
