@@ -16,20 +16,29 @@ export interface RouterSchema {
     modelVersion : String;
 }
 
-export interface ResponseStucture {
+export interface SuccessResponseStucture {
     id : string;
-    type : string;
+    type? : string;
     model : string;
     content : [
         {
             type : "text" | "image" | "video";
-            text : String
+            text : string
         }
     ];
     usage : {
         input_token : string;
         output_token : string;
         total_token : string; 
+    }
+    success : boolean;
+}
+
+export interface ErrorResponseStucture {
+    type : string;
+    error : {
+        type : string,
+        message : string
     }
     success : boolean;
 }

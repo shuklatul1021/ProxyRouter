@@ -2,7 +2,7 @@ import Router from "express";
 import UserMiddleware from "../middleware/auth.js";
 import { success } from "zod";
 import { ChatGptModelRouter, ClaudeModelRouter, DeepseekModelRouter, GoogleDeepmindModelRouter, GrokModelRouter } from "../model/router.js";
-import type { RouterSchema } from "../types/type.js";
+import type { ErrorResponseStucture, RouterSchema, SuccessResponseStucture } from "../types/type.js";
 import { VerifyApiMiddleware } from "../middleware/verifyAPI.js";
 const modelRouter = Router();
 
@@ -22,7 +22,7 @@ modelRouter.post(
         };
 
         let reqModel : RouterSchema | undefined;
-        let response : String | undefined;
+        let response : SuccessResponseStucture | ErrorResponseStucture
 
         switch (aiModel){
             case 'chatgpt':

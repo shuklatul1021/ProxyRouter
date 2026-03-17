@@ -1,5 +1,4 @@
-import model from "../routes/model.js";
-import type { RouterSchema } from "../types/type.js";
+import type { ErrorResponseStucture, RouterSchema, SuccessResponseStucture } from "../types/type.js";
 import { OpenAI_Model_Implementation } from "./chatgpt/chagpt.js";
 import { Claude_Model_Implementation } from "./claude/claude.js";
 import { Deepseek_Model_Implementation } from "./deepseek/deepseek.js";
@@ -7,9 +6,18 @@ import { Gemini_Model_Implementation } from "./gemini/gemini.js";
 import { Grok_Model_Implementation } from "./grok/grok.js";
 
 
-export async function ChatGptModelRouter( model : RouterSchema) : Promise<String|undefined>{
+export async function ChatGptModelRouter( model : RouterSchema) : Promise<SuccessResponseStucture | ErrorResponseStucture>{
+    let response : SuccessResponseStucture | ErrorResponseStucture;
     if(!model.userPrompt){
-        return "User Input Require"
+        response = {
+            type : "Error",
+            error : {
+                type : "user_prompt_not_defined",
+                message : "User Response Require To Access API"
+            },
+            success : false
+        }
+        return response;
     }
 
     if(
@@ -21,10 +29,30 @@ export async function ChatGptModelRouter( model : RouterSchema) : Promise<String
         const response = await OpenAI_Model_Implementation(model);
         return response; 
     }
-    return "Plese Provide Valid Gpt Model"
+    response = {
+        type : "error",
+        error : {
+            type : "not_valid_gpt_model_version",
+            message : "Require Valid GPT Model Version "
+        },
+        success : false
+    }
+    return response;
     
 }
-export async function ClaudeModelRouter( model : RouterSchema) : Promise<String|undefined>{
+export async function ClaudeModelRouter( model : RouterSchema) : Promise<SuccessResponseStucture | ErrorResponseStucture>{
+    let response : SuccessResponseStucture | ErrorResponseStucture;
+    if(!model.userPrompt){
+        response = {
+            type : "Error",
+            error : {
+                type : "user_prompt_not_defined",
+                message : "User Response Require To Access API"
+            },
+            success : false
+        }
+        return response;
+    }
     if(
         model.modelVersion === 'claude-3-opus' || 
         model.modelVersion === 'claude-3-sonnet' || 
@@ -35,9 +63,29 @@ export async function ClaudeModelRouter( model : RouterSchema) : Promise<String|
         const response = await Claude_Model_Implementation(model);
         return response; 
     }
-    return "Plese Provide Valid Claude Model"
+    response = {
+        type : "error",
+        error : {
+            type : "not_valid_gpt_model_version",
+            message : "Require Valid Claude Model Version "
+        },
+        success : false
+    }
+    return response;
 }
-export async function DeepseekModelRouter( model : RouterSchema)  : Promise<String|undefined> {
+export async function DeepseekModelRouter( model : RouterSchema)  : Promise<SuccessResponseStucture | ErrorResponseStucture> {
+    let response : SuccessResponseStucture | ErrorResponseStucture;
+    if(!model.userPrompt){
+        response = {
+            type : "Error",
+            error : {
+                type : "user_prompt_not_defined",
+                message : "User Response Require To Access API"
+            },
+            success : false
+        }
+        return response;
+    }
     if(
         model.modelVersion === 'deepseek-chat' || 
         model.modelVersion === 'deepseek-coder' || 
@@ -47,11 +95,30 @@ export async function DeepseekModelRouter( model : RouterSchema)  : Promise<Stri
         if(response){
             return response; 
         }
-        return undefined;
     }
-    return "Plese Provide Valid Claude Model"
+    response = {
+        type : "error",
+        error : {
+            type : "not_valid_gpt_model_version",
+            message : "Require Valid Deepseek Model Version "
+        },
+        success : false
+    }
+    return response;
 }
-export async function GoogleDeepmindModelRouter( model : RouterSchema)  : Promise<String|undefined> {
+export async function GoogleDeepmindModelRouter( model : RouterSchema) : Promise<SuccessResponseStucture | ErrorResponseStucture> {
+    let response : SuccessResponseStucture | ErrorResponseStucture ;
+    if(!model.userPrompt){
+        response = {
+            type : "Error",
+            error : {
+                type : "user_prompt_not_defined",
+                message : "User Response Require To Access API"
+            },
+            success : false
+        }
+        return response;
+    }
     if(
         model.modelVersion === 'gemini-1.0-pro' || 
         model.modelVersion === 'gemini-1.5-pro' || 
@@ -62,9 +129,29 @@ export async function GoogleDeepmindModelRouter( model : RouterSchema)  : Promis
         const response = await Gemini_Model_Implementation(model);
         return response; 
     }
-    return "Plese Provide Valid Claude Model"
+    response = {
+        type : "error",
+        error : {
+            type : "not_valid_gpt_model_version",
+            message : "Require Valid Gemini Deepmind Model Version "
+        },
+        success : false
+    }
+    return response;
 }
-export async function GrokModelRouter( model : RouterSchema)  : Promise<String|undefined>{
+export async function GrokModelRouter( model : RouterSchema)  : Promise<SuccessResponseStucture | ErrorResponseStucture>{
+    let response : SuccessResponseStucture | ErrorResponseStucture ;
+    if(!model.userPrompt){
+        response = {
+            type : "Error",
+            error : {
+                type : "user_prompt_not_defined",
+                message : "User Response Require To Access API"
+            },
+            success : false
+        }
+        return response;
+    }
     if(
         model.modelVersion === 'grok-1' || 
         model.modelVersion === 'grok-1.5' || 
@@ -73,5 +160,13 @@ export async function GrokModelRouter( model : RouterSchema)  : Promise<String|u
         const response = await Grok_Model_Implementation(model);
         return response; 
     }
-    return "Plese Provide Valid Claude Model"
+    response = {
+        type : "error",
+        error : {
+            type : "not_valid_gpt_model_version",
+            message : "Require Valid Grok Model Version "
+        },
+        success : false
+    }
+    return response;
 }
