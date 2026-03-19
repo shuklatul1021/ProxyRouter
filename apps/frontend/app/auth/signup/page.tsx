@@ -14,21 +14,27 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Zap, Github, ArrowRight, Loader2, Check } from "lucide-react";
+import { RegisterUser } from "@/api/auth/auth";
+import { useRouter } from "next/navigation";
 
 export default function SignupPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
+  const [companyname, setCompanyname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    // Add your signup logic here
-    setTimeout(() => {
-      setIsLoading(false);
-      window.location.href = "/dashboard";
-    }, 1500);
+    let regResult = await RegisterUser(name, username, companyname , email , password);
+    if(regResult.success){
+      router.push("/auth/login")
+    }else{
+      alert("Error");
+    }
   };
 
   const handleOAuthLogin = (provider: string) => {
@@ -144,6 +150,30 @@ export default function SignupPage() {
                     placeholder="John Doe"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
+                    required
+                    disabled={isLoading}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="name">Username</Label>
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="johndoe"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                    disabled={isLoading}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="name">Company Name</Label>
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="John Doe"
+                    value={companyname}
+                    onChange={(e) => setCompanyname(e.target.value)}
                     required
                     disabled={isLoading}
                   />

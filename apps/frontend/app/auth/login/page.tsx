@@ -14,20 +14,28 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Zap, Github, ArrowRight, Loader2 } from "lucide-react";
+import { LoginUser } from "@/api/auth/auth";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const router = useRouter();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    // Add your login logic here
-    setTimeout(() => {
+    const loginResult = await LoginUser(email , password);
+    if(loginResult.success){
+       toast("Login Successfully", { position: "bottom-right" })
+      router.push("/dashboard");
       setIsLoading(false);
-      window.location.href = "/dashboard";
-    }, 1500);
+    }else{
+      toast("Error While Login", { position: "bottom-right" })
+      setIsLoading(false);
+    }
+    setIsLoading(false);
   };
 
   const handleOAuthLogin = (provider: string) => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -46,65 +46,59 @@ import {
   RefreshCw,
   Check,
   AlertTriangle,
+  Loader2,
 } from "lucide-react";
+import { GenerateApiKey, GetUserAPIkey } from "@/api/home/keys";
+import { get } from "http";
 
-interface ApiKey {
+export interface ApiKey {
   id: string;
-  name: string;
-  key: string;
+  title: string;
+  api_token: string;
   createdAt: string;
-  lastUsed: string;
-  status: "active" | "revoked";
+  updatedAt: string;
 }
 
-const initialKeys: ApiKey[] = [
-  {
-    id: "1",
-    name: "Production API Key",
-    key: "sk-or-v1-abc123...xyz789",
-    createdAt: "2024-01-15",
-    lastUsed: "2 minutes ago",
-    status: "active",
-  },
-  {
-    id: "2",
-    name: "Development Key",
-    key: "sk-or-v1-def456...uvw012",
-    createdAt: "2024-02-20",
-    lastUsed: "1 hour ago",
-    status: "active",
-  },
-  {
-    id: "3",
-    name: "Testing Environment",
-    key: "sk-or-v1-ghi789...rst345",
-    createdAt: "2024-03-10",
-    lastUsed: "3 days ago",
-    status: "active",
-  },
-];
-
 export default function KeysPage() {
-  const [keys, setKeys] = useState<ApiKey[]>(initialKeys);
+  const [keys, setKeys] = useState<ApiKey[]>([]);
   const [newKeyName, setNewKeyName] = useState("");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [createdKey, setCreatedKey] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [visibleKeys, setVisibleKeys] = useState<Set<string>>(new Set());
+  const [loading, setLoading] = useState<boolean>(false);
+  const [apiKeyLoading, setApiKeyLoading] = useState<boolean>(true);
 
-  const handleCreateKey = () => {
-    const newKey = `sk-or-v1-${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`;
-    const newKeyObj: ApiKey = {
-      id: String(keys.length + 1),
-      name: newKeyName || "Unnamed Key",
-      key: newKey,
-      createdAt: new Date().toISOString().split("T")[0],
-      lastUsed: "Never",
-      status: "active",
-    };
-    setKeys([...keys, newKeyObj]);
-    setCreatedKey(newKey);
-    setNewKeyName("");
+  const formatDateTime = (value: string) => {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+      return value;
+    }
+
+    return new Intl.DateTimeFormat("en-IN", {
+      year: "numeric",
+      month: "short",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true,
+    }).format(date);
+  };
+
+  const handleCreateKey = async () => {
+    setLoading(true);
+    const newKey = await GenerateApiKey(newKeyName);
+    if (newKey.success) {
+      setCreatedKey(newKey.apikey || null);
+      getUserAPI();
+      setNewKeyName("");
+      setLoading(false);
+    } else {
+      alert("Error");
+      setLoading(false);
+    }
+    setLoading(false);
   };
 
   const handleCopyKey = async (key: string, id: string) => {
@@ -140,6 +134,30 @@ export default function KeysPage() {
     setCreatedKey(null);
     setNewKeyName("");
   };
+
+  const getUserAPI = async () => {
+    try {
+      setApiKeyLoading(true);
+      const userKey = await GetUserAPIkey();
+      if (userKey.success && userKey.apiKey) {
+        setKeys(userKey.apiKey);
+      }
+    } finally {
+      setApiKeyLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    void getUserAPI();
+  }, []);
+
+  if (apiKeyLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loader2 className="h-6 w-6 animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -185,7 +203,13 @@ export default function KeysPage() {
                   <Button variant="outline" onClick={closeCreateDialog}>
                     Cancel
                   </Button>
-                  <Button onClick={handleCreateKey}>Create Key</Button>
+                  {loading ? (
+                    <Button>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    </Button>
+                  ) : (
+                    <Button onClick={handleCreateKey}>Create Key</Button>
+                  )}
                 </DialogFooter>
               </>
             ) : (
@@ -259,15 +283,15 @@ export default function KeysPage() {
                   <TableCell className="font-medium">
                     <div className="flex items-center gap-2">
                       <Key className="h-4 w-4 text-muted-foreground" />
-                      {apiKey.name}
+                      {apiKey.title}
                     </div>
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <code className="rounded bg-muted px-2 py-1 text-sm">
                         {visibleKeys.has(apiKey.id)
-                          ? apiKey.key
-                          : apiKey.key.substring(0, 12) + "..."}
+                          ? apiKey.api_token
+                          : apiKey.api_token.substring(0, 12) + "..."}
                       </code>
                       <Button
                         variant="ghost"
@@ -285,7 +309,9 @@ export default function KeysPage() {
                         variant="ghost"
                         size="icon"
                         className="h-8 w-8"
-                        onClick={() => handleCopyKey(apiKey.key, apiKey.id)}
+                        onClick={() =>
+                          handleCopyKey(apiKey.api_token, apiKey.id)
+                        }
                       >
                         {copiedId === apiKey.id ? (
                           <Check className="h-4 w-4 text-accent" />
@@ -295,9 +321,9 @@ export default function KeysPage() {
                       </Button>
                     </div>
                   </TableCell>
-                  <TableCell>{apiKey.createdAt}</TableCell>
-                  <TableCell>{apiKey.lastUsed}</TableCell>
-                  <TableCell>
+                  <TableCell>{formatDateTime(apiKey.createdAt)}</TableCell>
+                  <TableCell>{formatDateTime(apiKey.updatedAt)}</TableCell>
+                  {/* <TableCell>
                     <Badge
                       variant={
                         apiKey.status === "active" ? "default" : "secondary"
@@ -305,7 +331,7 @@ export default function KeysPage() {
                     >
                       {apiKey.status}
                     </Badge>
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>

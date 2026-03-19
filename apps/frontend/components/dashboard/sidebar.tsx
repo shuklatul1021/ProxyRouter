@@ -26,6 +26,8 @@ import {
   HelpCircle,
   Book,
   ChevronDown,
+  Router,
+  Route,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -51,9 +53,9 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
       <div className="flex h-16 items-center border-b border-border px-6">
         <Link href="/" className="flex items-center gap-2" onClick={onNavigate}>
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-            <Zap className="h-5 w-5 text-primary-foreground" />
+            <Route className="h-5 w-5 text-primary-foreground" />
           </div>
-          <span className="text-lg font-bold">OpenRouter</span>
+          <span className="text-lg font-bold">ProxyRouter</span>
         </Link>
       </div>
 
