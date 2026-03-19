@@ -3,9 +3,11 @@ import { loginSchema, signupSchema } from "../types/schema.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken"
 import { prisma } from "@repo/store/client";
-const userRouter = Router();
+import UserMiddleware from "../middleware/auth.js";
+import { success } from "zod";
+const authRouter = Router();
 
-userRouter.post("/sign-up" , async (req , res) => {
+authRouter.post("/sign-up" , async (req , res) => {
     try{
         const { success , data } = signupSchema.safeParse(req.body);
         if(!success){
@@ -33,6 +35,13 @@ userRouter.post("/sign-up" , async (req , res) => {
             }
         });
 
+        await prisma.credit.create({
+            data : {
+                creditAmount : "0",
+                userId : createUser.id,
+            }
+        });
+
         if(!createUser){
             res.status(404).json({
                 message : "Error While Creating",
@@ -54,7 +63,7 @@ userRouter.post("/sign-up" , async (req , res) => {
 })
 
 
-userRouter.post("/log-in" , async (req , res) => {
+authRouter.post("/log-in" , async (req , res) => {
     try{
         const { success , data } = loginSchema.safeParse(req.body);
         if(!success){
@@ -105,7 +114,44 @@ userRouter.post("/log-in" , async (req , res) => {
     }
 })
 
+authRouter.get("/get-info" , UserMiddleware , async (req, res) => {
+    try{
+        const userid = req.userId;
+        const getUser = await prisma.user.findFirst({
+            where : {
+                id : userid
+            },
+            select : {
+                name : true,
+                email : true,
+                companyName : true,
+                username : true,
+                credit : true
+            }
+        });
+        if(!getUser){
+            return res.status(403).json({
+                message : "User Not Found",
+                success : false
+            })
+        }
+
+        return res.status(200).json({
+            message : "User Fetched Successfully",
+            user : getUser,
+            success : true
+        });
+
+    }catch(e){
+        console.log(e);
+        return res.status(500).json({
+            message  : "Internal Server Error",
+            success : false
+        })
+    }
+})
 
 
 
-export default userRouter;
+
+export default authRouter;

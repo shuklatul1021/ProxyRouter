@@ -1,8 +1,6 @@
 import { prisma } from "@repo/store/client";
 import type { NextFunction, Request, Response } from "express";
 
-
-
 export async function VerifyApiMiddleware(req : Request , res : Response, next : NextFunction){
     try{
         const apiTokenHeader = req.headers['Authorization'] as string;
