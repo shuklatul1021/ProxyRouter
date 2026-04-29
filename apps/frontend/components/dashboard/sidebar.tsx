@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
-  Zap,
+  Network,
   LayoutDashboard,
   Key,
   CreditCard,
@@ -26,8 +26,6 @@ import {
   HelpCircle,
   Book,
   ChevronDown,
-  Router,
-  Route,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -50,12 +48,14 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <div className="flex h-full flex-col">
       {/* Logo */}
-      <div className="flex h-16 items-center border-b border-border px-6">
+      <div className="flex h-16 items-center border-b border-white/10 px-6">
         <Link href="/" className="flex items-center gap-2" onClick={onNavigate}>
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-            <Route className="h-5 w-5 text-primary-foreground" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-md border border-white/15 bg-white/[0.06] text-white">
+            <Network className="h-5 w-5" />
           </div>
-          <span className="text-lg font-bold">ProxyRouter</span>
+          <span className="text-lg font-semibold text-white">
+            OpenRouter
+          </span>
         </Link>
       </div>
 
@@ -72,8 +72,8 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
                 className={cn(
                   "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                   isActive
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                    ? "bg-white text-black"
+                    : "text-zinc-500 hover:bg-white/5 hover:text-white",
                 )}
               >
                 <item.icon className="h-5 w-5" />
@@ -83,7 +83,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
           })}
         </div>
 
-        <div className="my-4 h-px bg-border" />
+        <div className="my-4 h-px bg-white/10" />
 
         <div className="space-y-1">
           {secondaryNavigation.map((item) => (
@@ -91,7 +91,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
               key={item.name}
               href={item.href}
               onClick={onNavigate}
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-zinc-500 transition-colors hover:bg-white/5 hover:text-white"
             >
               <item.icon className="h-5 w-5" />
               {item.name}
@@ -101,20 +101,20 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
       </nav>
 
       {/* Credits Display */}
-      <div className="border-t border-border p-4">
-        <div className="rounded-lg bg-muted/50 p-3">
+      <div className="border-t border-white/10 p-4">
+        <div className="rounded-md border border-white/10 bg-white/[0.04] p-3">
           <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">Credits</span>
+            <span className="text-sm text-zinc-500">Credits</span>
             <Link
               href="/dashboard/credits"
-              className="text-xs text-primary hover:underline"
+              className="text-xs text-white hover:underline"
               onClick={onNavigate}
             >
               Add more
             </Link>
           </div>
-          <p className="mt-1 text-2xl font-bold">$24.50</p>
-          <p className="text-xs text-muted-foreground">
+          <p className="mt-1 text-2xl font-semibold text-white">$24.50</p>
+          <p className="text-xs text-zinc-500">
             ~2.4M tokens remaining
           </p>
         </div>
@@ -129,7 +129,7 @@ export function DashboardSidebar() {
   return (
     <>
       {/* Desktop Sidebar */}
-      <aside className="fixed left-0 top-0 z-40 hidden h-screen w-64 border-r border-border bg-card lg:block">
+      <aside className="fixed left-0 top-0 z-40 hidden h-screen w-64 border-r border-white/10 bg-black lg:block">
         <SidebarContent />
       </aside>
 
@@ -139,12 +139,12 @@ export function DashboardSidebar() {
           <Button
             variant="ghost"
             size="icon"
-            className="fixed left-4 top-4 z-50"
+            className="fixed left-4 top-4 z-50 text-zinc-100 hover:bg-white/5"
           >
             <Menu className="h-5 w-5" />
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="w-64 p-0">
+        <SheetContent side="left" className="w-64 border-white/10 bg-black p-0">
           <SidebarContent onNavigate={() => setIsOpen(false)} />
         </SheetContent>
       </Sheet>
@@ -154,27 +154,32 @@ export function DashboardSidebar() {
 
 export function DashboardHeader() {
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-background/80 px-6 backdrop-blur-xl lg:justify-end">
+    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-white/10 bg-black/80 px-6 backdrop-blur-xl lg:justify-end">
       {/* Mobile spacer for hamburger menu */}
       <div className="w-10 lg:hidden" />
 
       {/* User Menu */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="gap-2">
-            <Avatar className="h-8 w-8">
+          <Button variant="ghost" className="gap-2 text-zinc-200 hover:bg-white/5">
+            <Avatar className="h-8 w-8 border border-white/15">
               <AvatarImage src="/avatar.png" alt="User" />
-              <AvatarFallback>JD</AvatarFallback>
+              <AvatarFallback className="bg-white text-black">
+                JD
+              </AvatarFallback>
             </Avatar>
             <span className="hidden sm:inline">John Doe</span>
-            <ChevronDown className="h-4 w-4 text-muted-foreground" />
+            <ChevronDown className="h-4 w-4 text-zinc-500" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuContent
+          align="end"
+          className="w-56 border-white/10 bg-zinc-950 text-zinc-100"
+        >
           <DropdownMenuLabel>
             <div className="flex flex-col">
               <span>John Doe</span>
-              <span className="text-sm font-normal text-muted-foreground">
+              <span className="text-sm font-normal text-zinc-500">
                 john@example.com
               </span>
             </div>

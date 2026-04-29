@@ -3,23 +3,26 @@ import type { NextFunction, Request, Response } from "express";
 
 export async function VerifyApiMiddleware(req : Request , res : Response, next : NextFunction){
     try{
-        const apiTokenHeader = req.headers['Authorization'] as string;
-        const token = apiTokenHeader?.split(' ')[1] as string;
+        const apiTokenHeader = req.get('x-api-key') as string;
+        console.log("Token Get" , apiTokenHeader);
         const userId = req.userId;
-        console.log("Token Get" , token);
-
+    
+    
         const verifyToken = await prisma.apiKey.findFirst({
             where : {
-                api_token : token,
+                api_token : apiTokenHeader,
                 userId : userId
             }
         });
 
-        if (verifyToken) {
-            return res.status(401).json({ error: 'No authorization token provided.' , success : false });
+
+        if (!verifyToken) {
+            return res.status(401).json({ error: 'Invalid authorization token.' , success : false });
         }
-        req.token = token;
-        next();
+
+        req.token = apiTokenHeader;
+        next();   
+       
     }catch(e){
         console.log(e);
         return res.status(500).json({

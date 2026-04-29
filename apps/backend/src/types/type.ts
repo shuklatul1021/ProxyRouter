@@ -31,7 +31,7 @@ export interface SuccessResponseStucture {
         output_token : string;
         total_token : string; 
     }
-    success : boolean;
+    success : true;
 }
 
 export interface ErrorResponseStucture {
@@ -40,5 +40,5 @@ export interface ErrorResponseStucture {
         type : string,
         message : string
     }
-    success : boolean;
+    success : false;
 }

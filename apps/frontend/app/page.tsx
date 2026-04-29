@@ -1,353 +1,311 @@
-import { Navbar } from "@/components/navbar";
-import { Footer } from "@/components/footer";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import {
-  Zap,
-  Shield,
-  DollarSign,
-  Code,
   ArrowRight,
-  Check,
-  Globe,
-  Sparkles,
+  BadgeCheck,
   BarChart3,
+  Boxes,
+  ChevronRight,
+  Code2,
+  Gauge,
+  GitBranch,
+  KeyRound,
+  Landmark,
+  Network,
+  ShieldCheck,
+  Sparkles,
+  WalletCards,
 } from "lucide-react";
+import { Footer } from "@/components/footer";
+import { Navbar } from "@/components/navbar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
-const models = [
-  {
-    name: "GPT-4 Turbo",
-    provider: "OpenAI",
-    description: "Most capable GPT-4 model with 128k context",
-    price: "$10.00",
-    badge: "Popular",
-  },
-  {
-    name: "Claude 3 Opus",
-    provider: "Anthropic",
-    description: "Most intelligent Claude model for complex tasks",
-    price: "$15.00",
-    badge: "New",
-  },
-  {
-    name: "Gemini 1.5 Pro",
-    provider: "Google",
-    description: "Multi-modal model with 1M context window",
-    price: "$3.50",
-    badge: null,
-  },
-  {
-    name: "Llama 3 70B",
-    provider: "Meta",
-    description: "Open-source powerhouse for general tasks",
-    price: "$0.90",
-    badge: "Open Source",
-  },
-  {
-    name: "Mixtral 8x22B",
-    provider: "Mistral",
-    description: "Mixture of experts for efficient inference",
-    price: "$1.20",
-    badge: null,
-  },
-  {
-    name: "Command R+",
-    provider: "Cohere",
-    description: "Optimized for RAG and tool use",
-    price: "$3.00",
-    badge: null,
-  },
+const platformStats = [
+  { label: "Models", value: "400+", tone: "text-white" },
+  { label: "Providers", value: "60+", tone: "text-sky-200" },
+  { label: "Free models", value: "25+", tone: "text-emerald-200" },
 ];
 
 const features = [
   {
-    icon: Globe,
-    title: "Unified API",
+    title: "One OpenAI-compatible API",
     description:
-      "Access 100+ AI models through a single, consistent API endpoint. No need to manage multiple integrations.",
+      "Route prompts to OpenAI, Anthropic, Google, Meta, Mistral, DeepSeek, xAI, and other providers from one request format.",
+    icon: Code2,
   },
   {
-    icon: DollarSign,
-    title: "Pay As You Go",
+    title: "Automatic routing and fallback",
     description:
-      "Only pay for what you use with transparent per-token pricing. No monthly fees or commitments.",
+      "Prefer vendors, pin versions, route by policy, and retry healthy alternatives when a provider or model fails.",
+    icon: GitBranch,
   },
   {
-    icon: Shield,
-    title: "Enterprise Security",
+    title: "Credits, BYOK, and spend controls",
     description:
-      "SOC 2 Type II compliant with end-to-end encryption. Your data never leaves our secure infrastructure.",
-  },
-  {
-    icon: Zap,
-    title: "Smart Routing",
-    description:
-      "Automatic fallback and load balancing across providers. 99.99% uptime guaranteed.",
-  },
-  {
-    icon: BarChart3,
-    title: "Usage Analytics",
-    description:
-      "Detailed insights into your API usage, costs, and performance metrics in real-time.",
-  },
-  {
-    icon: Code,
-    title: "Developer First",
-    description:
-      "SDKs for every major language, comprehensive docs, and a vibrant community.",
+      "Buy credits, bring provider keys, set budgets, review activity logs, and separate dev, staging, and production keys.",
+    icon: WalletCards,
   },
 ];
 
-const codeExample = `import OpenRouter from 'openrouter';
+const modelRows = [
+  ["openai/gpt-4.1", "OpenAI", "Text, vision, tools", "Pinned"],
+  ["anthropic/claude-3.7-sonnet", "Anthropic", "Long-form reasoning", "Auto"],
+  ["google/gemini-2.5-pro", "Google", "Multimodal context", "Auto"],
+  ["meta-llama/llama-3.3-70b", "Meta", "Fast open model", "Fallback"],
+];
 
-const client = new OpenRouter({
-  apiKey: process.env.OPENROUTER_API_KEY,
-});
+const pricingRows = [
+  ["Free", "50 reqs/day", "Free models only"],
+  ["Pay-as-you-go", "High global limits", "Model pass-through pricing"],
+  ["Enterprise", "Dedicated options", "Volume commits and SLA"],
+];
 
-const response = await client.chat.completions.create({
-  model: 'anthropic/claude-3-opus',
-  messages: [
-    { role: 'user', content: 'Hello, Claude!' }
-  ],
-});
-
-console.log(response.choices[0].message.content);`;
+const platformDetails = [
+  {
+    title: "Model catalog",
+    description:
+      "Search models by provider, modality, context length, pricing, and supported parameters.",
+    icon: Boxes,
+  },
+  {
+    title: "Usage analytics",
+    description:
+      "Review requests, token volume, costs, latency, and model-level spend over time.",
+    icon: BarChart3,
+  },
+  {
+    title: "Provider policy",
+    description:
+      "Prefer vendors, route by region, disable data retention, and pin explicit model versions.",
+    icon: ShieldCheck,
+  },
+  {
+    title: "Billing plans",
+    description:
+      "Free, pay-as-you-go, enterprise, auto top-up, credits, crypto, bank transfer, and invoices.",
+    icon: Landmark,
+  },
+];
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="router-bg min-h-screen overflow-x-hidden text-white">
       <Navbar />
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden pt-32 pb-20">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/20 via-background to-background" />
-        <div className="container relative mx-auto px-4 text-center">
-          <Badge variant="secondary" className="mb-6">
-            <Sparkles className="mr-1 h-3 w-3" />
-            Now supporting 100+ AI models
-          </Badge>
-          <h1 className="mx-auto max-w-4xl text-5xl font-bold tracking-tight md:text-7xl">
-            One API for <span className="gradient-text">All AI Models</span>
-          </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground md:text-xl">
-            Access GPT-4, Claude, Gemini, Llama, and 100+ more models through a
-            unified API. Pay only for what you use with transparent pricing.
-          </p>
-          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Link href="/auth/signup">
-              <Button size="lg" className="gap-2 px-8">
-                Get Started Free
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
-            <Link href="/docs">
-              <Button size="lg" variant="outline" className="px-8">
-                View Documentation
-              </Button>
-            </Link>
-          </div>
+      <main className="relative pt-16">
+        <section className="relative mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl items-center gap-10 px-4 pb-14 pt-10 sm:px-6 lg:grid-cols-[0.98fr_1.02fr] lg:px-8">
+          <div className="router-grid pointer-events-none absolute inset-0 -z-10" />
 
-          <div className="mt-8 flex items-center justify-center gap-8 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <Check className="h-4 w-4 text-accent" />
-              No credit card required
-            </div>
-            <div className="flex items-center gap-2">
-              <Check className="h-4 w-4 text-accent" />
-              $5 free credits
-            </div>
-            <div className="flex items-center gap-2">
-              <Check className="h-4 w-4 text-accent" />
-              Cancel anytime
-            </div>
-          </div>
-        </div>
-      </section>
+          <div className="max-w-3xl">
+            <Badge className="border-white/15 bg-white/[0.06] px-3 py-1 text-xs uppercase tracking-[0.16em] text-zinc-200">
+              <Network className="mr-1.5 h-3.5 w-3.5" />
+              Unified AI model router
+            </Badge>
 
-      {/* Models Section */}
-      <section className="border-t border-border bg-card/50 py-20">
-        <div className="container mx-auto px-4">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold md:text-4xl">
-              Access Top AI Models
-            </h2>
-            <p className="mt-4 text-muted-foreground">
-              Choose from the world&apos;s leading AI models, all available
-              through a single API.
+            <h1 className="mt-7 max-w-4xl text-5xl font-semibold leading-[0.96] tracking-tight text-white sm:text-6xl lg:text-7xl">
+              OpenRouter-style access to every leading model.
+            </h1>
+
+            <p className="mt-6 max-w-2xl text-base leading-7 text-zinc-300 sm:text-lg">
+              Build with a single API for model discovery, provider routing,
+              credits, usage analytics, API keys, BYOK, and fallback reliability
+              across hundreds of models.
             </p>
-          </div>
-          <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {models.map((model) => (
-              <Card
-                key={model.name}
-                className="group cursor-pointer transition-all hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5"
-              >
-                <CardHeader className="flex flex-row items-start justify-between space-y-0">
-                  <div>
-                    <CardTitle className="text-lg">{model.name}</CardTitle>
-                    <p className="text-sm text-muted-foreground">
-                      {model.provider}
-                    </p>
-                  </div>
-                  {model.badge && (
-                    <Badge
-                      variant={
-                        model.badge === "Popular" ? "default" : "secondary"
-                      }
-                    >
-                      {model.badge}
-                    </Badge>
-                  )}
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    {model.description}
-                  </p>
-                  <p className="mt-4 text-lg font-semibold text-primary">
-                    {model.price}
-                    <span className="text-sm font-normal text-muted-foreground">
-                      {" "}
-                      / 1M tokens
-                    </span>
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-          <div className="mt-8 text-center">
-            <Link href="/models">
-              <Button variant="outline" className="gap-2">
-                View All Models
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
 
-      {/* Features Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold md:text-4xl">
-              Why Choose OpenRouter?
-            </h2>
-            <p className="mt-4 text-muted-foreground">
-              Built for developers who want simplicity without sacrificing
-              power.
-            </p>
-          </div>
-          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {features.map((feature) => (
-              <Card key={feature.title} className="border-border/50">
-                <CardHeader>
-                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
-                    <feature.icon className="h-6 w-6 text-primary" />
-                  </div>
-                  <CardTitle className="mt-4">{feature.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">{feature.description}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Code Example Section */}
-      <section className="border-t border-border bg-card/50 py-20">
-        <div className="container mx-auto px-4">
-          <div className="grid items-center gap-12 lg:grid-cols-2">
-            <div>
-              <h2 className="text-3xl font-bold md:text-4xl">
-                Start Building in Minutes
-              </h2>
-              <p className="mt-4 text-muted-foreground">
-                Our API is compatible with OpenAI&apos;s SDK. Switch providers
-                or try new models with a single line change.
-              </p>
-              <ul className="mt-8 space-y-4">
-                <li className="flex items-center gap-3">
-                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent/20">
-                    <Check className="h-4 w-4 text-accent" />
-                  </div>
-                  <span>OpenAI SDK compatible</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent/20">
-                    <Check className="h-4 w-4 text-accent" />
-                  </div>
-                  <span>Streaming support out of the box</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent/20">
-                    <Check className="h-4 w-4 text-accent" />
-                  </div>
-                  <span>Function calling & tool use</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent/20">
-                    <Check className="h-4 w-4 text-accent" />
-                  </div>
-                  <span>Vision & multi-modal support</span>
-                </li>
-              </ul>
-              <div className="mt-8">
-                <Link href="/docs/quickstart">
-                  <Button className="gap-2">
-                    Read the Quickstart Guide
-                    <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </Link>
-              </div>
-            </div>
-            <div className="rounded-xl border border-border bg-[#0d0d0d] p-6">
-              <div className="mb-4 flex items-center gap-2">
-                <div className="h-3 w-3 rounded-full bg-red-500" />
-                <div className="h-3 w-3 rounded-full bg-yellow-500" />
-                <div className="h-3 w-3 rounded-full bg-green-500" />
-                <span className="ml-2 text-sm text-muted-foreground">
-                  index.ts
-                </span>
-              </div>
-              <pre className="overflow-x-auto text-sm">
-                <code className="text-muted-foreground">{codeExample}</code>
-              </pre>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary/20 via-primary/10 to-background p-12 text-center">
-            <h2 className="text-3xl font-bold md:text-4xl">
-              Ready to Get Started?
-            </h2>
-            <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
-              Join thousands of developers using OpenRouter to build the next
-              generation of AI applications.
-            </p>
-            <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <Link href="/auth/signup">
-                <Button size="lg" className="gap-2 px-8">
-                  Create Free Account
+                <Button
+                  size="lg"
+                  className="min-w-44 gap-2 rounded-md bg-white px-7 font-semibold text-black hover:bg-zinc-200"
+                >
+                  Start Building
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
-              <Link href="/contact">
-                <Button size="lg" variant="outline" className="px-8">
-                  Contact Sales
+              <Link href="/dashboard">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="min-w-44 gap-2 rounded-md border-zinc-700 bg-black/60 px-7 text-zinc-100 hover:bg-zinc-900"
+                >
+                  View Console
+                  <ChevronRight className="h-4 w-4" />
                 </Button>
               </Link>
             </div>
+
+            <div className="mt-10 grid max-w-2xl gap-3 sm:grid-cols-3">
+              {platformStats.map((stat) => (
+                <div
+                  key={stat.label}
+                  className="rounded-md border border-white/10 bg-white/[0.035] p-4"
+                >
+                  <p className="text-xs uppercase tracking-[0.14em] text-zinc-500">
+                    {stat.label}
+                  </p>
+                  <p className={`mt-2 text-2xl font-semibold ${stat.tone}`}>
+                    {stat.value}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+
+          <div className="relative mx-auto w-full max-w-xl">
+            <div className="router-console">
+              <div className="flex items-center justify-between border-b border-white/10 px-5 py-4">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.18em] text-zinc-500">
+                    Chat completions
+                  </p>
+                  <p className="mt-1 text-2xl font-semibold text-white sm:text-3xl">
+                    /api/v1/chat/completions
+                  </p>
+                </div>
+                <div className="rounded-md border border-white/15 bg-white/[0.06] p-3 text-white">
+                  <KeyRound className="h-6 w-6" />
+                </div>
+              </div>
+
+              <div className="p-5">
+                <div className="rounded-md border border-white/10 bg-black/55 p-4 font-mono text-xs leading-6 text-zinc-300">
+                  <p className="text-zinc-500">POST</p>
+                  <p>
+                    model:{" "}
+                    <span className="text-emerald-200">
+                      &quot;openrouter/auto&quot;
+                    </span>
+                  </p>
+                  <p>
+                    route:{" "}
+                    <span className="text-sky-200">
+                      [&quot;openai&quot;, &quot;anthropic&quot;,
+                      &quot;google&quot;]
+                    </span>
+                  </p>
+                  <p>
+                    fallback: <span className="text-white">true</span>
+                  </p>
+                </div>
+
+                <div className="mt-5 rounded-md border border-white/10 bg-black/35">
+                  {modelRows.map(([model, provider, capability, mode]) => (
+                    <div
+                      key={model}
+                      className="grid gap-1 border-b border-white/10 px-4 py-3 last:border-0 sm:grid-cols-[1.25fr_0.7fr_1fr_auto] sm:items-center sm:gap-4"
+                    >
+                      <span className="font-mono text-sm text-white">
+                        {model}
+                      </span>
+                      <span className="text-sm text-zinc-400">{provider}</span>
+                      <span className="text-sm text-zinc-500">
+                        {capability}
+                      </span>
+                      <span className="text-xs text-emerald-300">{mode}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-5 grid grid-cols-2 gap-3">
+                  <div className="rounded-md border border-sky-300/20 bg-sky-300/10 p-4">
+                    <Gauge className="h-5 w-5 text-sky-200" />
+                    <p className="mt-3 text-sm text-zinc-400">Avg latency</p>
+                    <p className="text-xl font-semibold text-white">324ms</p>
+                  </div>
+                  <div className="rounded-md border border-emerald-300/20 bg-emerald-300/10 p-4">
+                    <BadgeCheck className="h-5 w-5 text-emerald-300" />
+                    <p className="mt-3 text-sm text-zinc-400">Success rate</p>
+                    <p className="text-xl font-semibold text-white">99.95%</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="border-y border-white/10 bg-black/50 py-16">
+          <div className="mx-auto grid max-w-7xl gap-4 px-4 sm:px-6 lg:grid-cols-3 lg:px-8">
+            {features.map((feature) => (
+              <article key={feature.title} className="router-card p-6">
+                <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-md border border-white/15 bg-white/[0.06] text-white">
+                  <feature.icon className="h-5 w-5" />
+                </div>
+                <h2 className="text-xl font-semibold text-white">
+                  {feature.title}
+                </h2>
+                <p className="mt-3 text-sm leading-6 text-zinc-400">
+                  {feature.description}
+                </p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="mx-auto grid max-w-7xl gap-6 px-4 py-16 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
+          <div>
+            <Badge className="border-white/15 bg-white/[0.06] text-zinc-200">
+              <Sparkles className="mr-1.5 h-3.5 w-3.5" />
+              Platform details
+            </Badge>
+            <h2 className="mt-5 max-w-xl text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+              Everything builders expect from an OpenRouter-like console.
+            </h2>
+            <p className="mt-4 max-w-xl text-sm leading-6 text-zinc-400">
+              Browse models, compare context windows and token pricing, create
+              scoped API keys, track every request, configure provider policies,
+              and keep billing in one place.
+            </p>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            {platformDetails.map((detail) => (
+              <article key={detail.title} className="router-card p-5">
+                <detail.icon className="h-5 w-5 text-zinc-200" />
+                <h3 className="mt-4 font-semibold text-white">
+                  {detail.title}
+                </h3>
+                <p className="mt-2 text-sm leading-6 text-zinc-500">
+                  {detail.description}
+                </p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="border-t border-white/10 bg-black py-16">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="text-sm uppercase tracking-[0.16em] text-zinc-500">
+                  Pricing and limits
+                </p>
+                <h2 className="mt-2 text-3xl font-semibold text-white">
+                  Simple plans for API access.
+                </h2>
+              </div>
+              <Link href="/auth/signup">
+                <Button className="gap-2 rounded-md bg-white text-black hover:bg-zinc-200">
+                  Create API Key
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+
+            <div className="overflow-hidden rounded-md border border-white/10">
+              {pricingRows.map(([plan, limit, pricing]) => (
+                <div
+                  key={plan}
+                  className="grid gap-2 border-b border-white/10 bg-white/[0.025] px-4 py-4 last:border-0 sm:grid-cols-3 sm:items-center"
+                >
+                  <span className="font-semibold text-white">{plan}</span>
+                  <span className="text-sm text-zinc-400">{limit}</span>
+                  <span className="text-sm text-zinc-500">{pricing}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </main>
 
       <Footer />
     </div>

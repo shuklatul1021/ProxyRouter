@@ -1,5 +1,21 @@
 "use client";
 
+import Link from "next/link";
+import {
+  ArrowUpRight,
+  BarChart3,
+  Clock,
+  Code2,
+  CreditCard,
+  GitBranch,
+  Key,
+  Network,
+  ShieldCheck,
+  TrendingUp,
+  WalletCards,
+} from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -7,38 +23,25 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import {
-  BarChart3,
-  CreditCard,
-  Key,
-  Zap,
-  ArrowUpRight,
-  TrendingUp,
-  Clock,
-  Activity,
-} from "lucide-react";
-import Link from "next/link";
 
 const stats = [
   {
-    title: "Total Credits",
+    title: "Credit Balance",
     value: "$24.50",
-    description: "~2.4M tokens remaining",
-    icon: CreditCard,
+    description: "~2.4M estimated tokens",
+    icon: WalletCards,
     trend: null,
   },
   {
     title: "API Requests",
     value: "12,847",
-    description: "Last 30 days",
-    icon: Activity,
+    description: "Requests in 30 days",
+    icon: Network,
     trend: "+12.5%",
   },
   {
-    title: "Tokens Used",
+    title: "Tokens Routed",
     value: "4.2M",
     description: "Last 30 days",
     icon: BarChart3,
@@ -47,7 +50,7 @@ const stats = [
   {
     title: "Active Keys",
     value: "3",
-    description: "2 in production",
+    description: "2 production keys",
     icon: Key,
     trend: null,
   },
@@ -55,73 +58,99 @@ const stats = [
 
 const recentActivity = [
   {
-    model: "gpt-4-turbo",
+    model: "openai/gpt-4.1",
+    provider: "OpenAI",
     tokens: 2847,
     cost: "$0.028",
     time: "2 min ago",
   },
   {
-    model: "claude-3-opus",
+    model: "anthropic/claude-3.7-sonnet",
+    provider: "Anthropic",
     tokens: 5621,
     cost: "$0.084",
     time: "5 min ago",
   },
   {
-    model: "gemini-1.5-pro",
+    model: "google/gemini-2.5-pro",
+    provider: "Google",
     tokens: 1234,
     cost: "$0.004",
     time: "12 min ago",
   },
   {
-    model: "llama-3-70b",
+    model: "meta-llama/llama-3.3-70b",
+    provider: "Meta",
     tokens: 8432,
     cost: "$0.008",
     time: "18 min ago",
   },
   {
-    model: "gpt-4-turbo",
+    model: "deepseek/deepseek-chat",
+    provider: "DeepSeek",
     tokens: 3156,
     cost: "$0.032",
     time: "25 min ago",
   },
 ];
 
-const topModels = [
-  { name: "GPT-4 Turbo", usage: 45, requests: 5782 },
-  { name: "Claude 3 Opus", usage: 28, requests: 3621 },
-  { name: "Gemini 1.5 Pro", usage: 15, requests: 1934 },
-  { name: "Llama 3 70B", usage: 12, requests: 1510 },
+const providerMix = [
+  { name: "OpenAI", usage: 39, requests: "5,782 reqs" },
+  { name: "Anthropic", usage: 28, requests: "3,621 reqs" },
+  { name: "Google", usage: 18, requests: "1,934 reqs" },
+  { name: "Open models", usage: 15, requests: "1,510 reqs" },
 ];
 
 export default function DashboardPage() {
   return (
     <div className="space-y-8">
-      {/* Welcome Header */}
-      <div>
-        <h1 className="text-3xl font-bold">Welcome back, John!</h1>
-        <p className="mt-2 text-muted-foreground">
-          Here&apos;s an overview of your API usage and credits.
-        </p>
-      </div>
+      <section className="relative overflow-hidden rounded-md border border-white/10 bg-black p-6 shadow-2xl lg:p-8">
+        <div className="router-grid pointer-events-none absolute inset-0 opacity-60" />
+        <div className="relative grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
+          <div>
+            <Badge className="border-white/15 bg-white/[0.06] text-zinc-200">
+              <ShieldCheck className="mr-1.5 h-3.5 w-3.5" />
+              Routing overview
+            </Badge>
+            <h1 className="mt-5 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+              Welcome back, John.
+            </h1>
+            <p className="mt-2 max-w-2xl text-zinc-400">
+              Monitor model routing, API keys, credits, provider fallback, and
+              request analytics from your OpenRouter console.
+            </p>
+          </div>
 
-      {/* Stats Grid */}
+          <div className="min-w-64 rounded-md border border-white/10 bg-white/[0.04] p-5">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-zinc-300">Available credits</span>
+              <WalletCards className="h-5 w-5 text-white" />
+            </div>
+            <p className="mt-3 text-4xl font-semibold text-white">$24.50</p>
+            <p className="mt-1 text-sm text-emerald-300">
+              Auto fallback: enabled
+            </p>
+          </div>
+        </div>
+      </section>
+
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => (
-          <Card key={stat.title}>
+          <Card key={stat.title} className="router-card">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
+              <CardTitle className="text-sm font-medium text-zinc-400">
                 {stat.title}
               </CardTitle>
-              <stat.icon className="h-4 w-4 text-muted-foreground" />
+              <stat.icon className="h-4 w-4 text-zinc-200" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <div className="flex items-center gap-2">
-                <p className="text-xs text-muted-foreground">
-                  {stat.description}
-                </p>
+              <div className="text-2xl font-semibold text-white">
+                {stat.value}
+              </div>
+              <div className="mt-2 flex items-center gap-2">
+                <p className="text-xs text-zinc-500">{stat.description}</p>
                 {stat.trend && (
-                  <Badge variant="secondary" className="gap-1 text-xs">
+                  <Badge className="gap-1 border-emerald-300/20 bg-emerald-300/10 text-xs text-emerald-300">
                     <TrendingUp className="h-3 w-3" />
                     {stat.trend}
                   </Badge>
@@ -132,17 +161,21 @@ export default function DashboardPage() {
         ))}
       </div>
 
-      {/* Main Content Grid */}
-      <div className="grid gap-6 lg:grid-cols-2">
-        {/* Recent Activity */}
-        <Card>
+      <div className="grid gap-6 lg:grid-cols-[1.08fr_0.92fr]">
+        <Card className="router-card">
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
-              <CardTitle>Recent Activity</CardTitle>
-              <CardDescription>Your latest API requests</CardDescription>
+              <CardTitle className="text-white">Recent Requests</CardTitle>
+              <CardDescription className="text-zinc-500">
+                Latest routed model calls
+              </CardDescription>
             </div>
             <Link href="/dashboard/usage">
-              <Button variant="ghost" size="sm" className="gap-1">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="gap-1 text-zinc-100 hover:bg-white/5"
+              >
                 View all
                 <ArrowUpRight className="h-4 w-4" />
               </Button>
@@ -150,25 +183,28 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {recentActivity.map((activity, index) => (
+              {recentActivity.map((activity) => (
                 <div
-                  key={index}
-                  className="flex items-center justify-between border-b border-border pb-4 last:border-0 last:pb-0"
+                  key={`${activity.model}-${activity.time}`}
+                  className="flex items-center justify-between gap-4 border-b border-white/10 pb-4 last:border-0 last:pb-0"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                      <Zap className="h-5 w-5 text-primary" />
+                  <div className="flex min-w-0 items-center gap-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-white/10 bg-white/[0.04]">
+                      <Network className="h-5 w-5 text-zinc-200" />
                     </div>
-                    <div>
-                      <p className="font-medium">{activity.model}</p>
-                      <p className="text-sm text-muted-foreground">
+                    <div className="min-w-0">
+                      <p className="truncate font-mono text-sm font-medium text-white">
+                        {activity.model}
+                      </p>
+                      <p className="text-sm text-zinc-500">
+                        {activity.provider} ·{" "}
                         {activity.tokens.toLocaleString()} tokens
                       </p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="font-medium">{activity.cost}</p>
-                    <p className="flex items-center gap-1 text-sm text-muted-foreground">
+                    <p className="font-medium text-white">{activity.cost}</p>
+                    <p className="flex items-center justify-end gap-1 text-sm text-zinc-500">
                       <Clock className="h-3 w-3" />
                       {activity.time}
                     </p>
@@ -179,31 +215,42 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        {/* Top Models */}
-        <Card>
+        <Card className="router-card">
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
-              <CardTitle>Top Models</CardTitle>
-              <CardDescription>Most used models this month</CardDescription>
+              <CardTitle className="text-white">Provider Mix</CardTitle>
+              <CardDescription className="text-zinc-500">
+                Model traffic by provider
+              </CardDescription>
             </div>
-            <Link href="/dashboard/usage">
-              <Button variant="ghost" size="sm" className="gap-1">
+            <Link href="/dashboard/credits">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="gap-1 text-zinc-100 hover:bg-white/5"
+              >
                 Details
                 <ArrowUpRight className="h-4 w-4" />
               </Button>
             </Link>
           </CardHeader>
           <CardContent>
+            <div className="mb-6 rounded-md border border-white/10 bg-black/45 p-4 font-mono text-xs leading-6 text-zinc-300">
+              <p>route = [&quot;openai&quot;, &quot;anthropic&quot;, &quot;google&quot;]</p>
+              <p>fallback = true</p>
+              <p>data_retention = &quot;disabled&quot;</p>
+            </div>
+
             <div className="space-y-6">
-              {topModels.map((model) => (
-                <div key={model.name} className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium">{model.name}</span>
-                    <span className="text-sm text-muted-foreground">
-                      {model.requests.toLocaleString()} requests
+              {providerMix.map((item) => (
+                <div key={item.name} className="space-y-2">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="font-medium text-white">{item.name}</span>
+                    <span className="text-sm text-zinc-500">
+                      {item.requests}
                     </span>
                   </div>
-                  <Progress value={model.usage} className="h-2" />
+                  <Progress value={item.usage} className="h-2 bg-zinc-800" />
                 </div>
               ))}
             </div>
@@ -211,48 +258,49 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      {/* Quick Actions */}
-      <Card>
+      <Card className="router-card">
         <CardHeader>
-          <CardTitle>Quick Actions</CardTitle>
-          <CardDescription>Common tasks and shortcuts</CardDescription>
+          <CardTitle className="text-white">Quick Actions</CardTitle>
+          <CardDescription className="text-zinc-500">
+            Common model routing and account shortcuts
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <Link href="/dashboard/keys">
               <Button
                 variant="outline"
-                className="h-auto w-full flex-col gap-2 p-4"
+                className="h-28 w-full flex-col gap-2 rounded-md border-zinc-700 bg-black/35 text-zinc-100 hover:bg-zinc-900"
               >
-                <Key className="h-6 w-6" />
+                <Key className="h-6 w-6 text-zinc-100" />
                 <span>Create API Key</span>
               </Button>
             </Link>
             <Link href="/dashboard/credits">
               <Button
                 variant="outline"
-                className="h-auto w-full flex-col gap-2 p-4"
+                className="h-28 w-full flex-col gap-2 rounded-md border-zinc-700 bg-black/35 text-zinc-100 hover:bg-zinc-900"
               >
-                <CreditCard className="h-6 w-6" />
+                <CreditCard className="h-6 w-6 text-zinc-100" />
                 <span>Add Credits</span>
               </Button>
             </Link>
             <Link href="/docs">
               <Button
                 variant="outline"
-                className="h-auto w-full flex-col gap-2 p-4"
+                className="h-28 w-full flex-col gap-2 rounded-md border-zinc-700 bg-black/35 text-zinc-100 hover:bg-zinc-900"
               >
-                <BarChart3 className="h-6 w-6" />
+                <Code2 className="h-6 w-6 text-zinc-100" />
                 <span>View Docs</span>
               </Button>
             </Link>
             <Link href="/dashboard/usage">
               <Button
                 variant="outline"
-                className="h-auto w-full flex-col gap-2 p-4"
+                className="h-28 w-full flex-col gap-2 rounded-md border-zinc-700 bg-black/35 text-zinc-100 hover:bg-zinc-900"
               >
-                <Activity className="h-6 w-6" />
-                <span>Usage Report</span>
+                <GitBranch className="h-6 w-6 text-zinc-100" />
+                <span>Routing Report</span>
               </Button>
             </Link>
           </div>

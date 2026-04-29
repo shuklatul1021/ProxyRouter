@@ -5,7 +5,7 @@ export const GenerateApiKey = () : string | null => {
     for(let i = 0; i < 48; i++){
         api_key += word_count.charAt(Math.floor(Math.random() * word_count.length));
     }
-     console.log(api_key);
+    console.log(api_key);
     return api_key
    
 }

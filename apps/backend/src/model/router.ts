@@ -124,7 +124,8 @@ export async function GoogleDeepmindModelRouter( model : RouterSchema) : Promise
         model.modelVersion === 'gemini-1.5-pro' || 
         model.modelVersion === 'gemini-1.5-flash' ||
         model.modelVersion === 'gemini-2.0-pro' ||
-        model.modelVersion === 'gemini-2.0-flash'
+        model.modelVersion === 'gemini-2.0-flash' ||
+        model.modelVersion === 'gemini-3.1-flash-lite-preview' 
     ){
         const response = await Gemini_Model_Implementation(model);
         return response; 

@@ -1,21 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "ModelRouter - Unified AI API Gateway",
+  title: "OpenRouter - Unified AI Model Gateway",
   description:
-    "Access multiple AI models through a single API. Pay-as-you-go pricing with credits system.",
+    "A black and white AI routing console for model discovery, API keys, credits, provider fallback, and usage analytics.",
 };
 
 export default function RootLayout({
@@ -25,11 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
-      >
-        {children}
-      </body>
+      <body className="bg-background text-foreground antialiased">{children}</body>
     </html>
   );
 }
