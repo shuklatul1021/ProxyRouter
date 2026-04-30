@@ -17,7 +17,7 @@ export async function VerifyApiMiddleware(req : Request , res : Response, next :
 
 
         if (!verifyToken) {
-            return res.status(401).json({ error: 'Invalid authorization token.' , success : false });
+            return res.status(401).json({ error: 'Invalid authorization Api Key.' , success : false });
         }
 
         req.token = apiTokenHeader;

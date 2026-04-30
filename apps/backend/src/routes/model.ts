@@ -16,20 +16,8 @@ import type {
 import { VerifyApiMiddleware } from "../middleware/verifyAPI.js";
 import { prisma } from "@repo/store/client";
 import { id } from "zod/locales";
+import { CreditController } from "../controller/credit.controller.js";
 const modelRouter = Router();
-
-modelRouter.get("/testingheader", UserMiddleware, VerifyApiMiddleware, async (req, res) => {
-    try{
-        const token = req.token;
-        res.status(200).json({ token });
-    } catch (e) {
-        console.log(e);
-        return res.status(500).json({
-            message: "Internal Server Error",
-            success: false,
-        });
-    }
-});
 
 modelRouter.post(
   "/chat/:model",
@@ -46,8 +34,9 @@ modelRouter.post(
           success: false,
         });
       }
-
+      console.log("The Request Body : ", userId);
       const user_credit = await prisma.credit.findFirst({ where : { userId : userId }});
+      console.log("User Credit : ", user_credit);
       if(!user_credit){
         return res.status(403).json({
           message : "Credit System not Found For User",
@@ -98,7 +87,6 @@ modelRouter.post(
             modelVersion: modelVersion,
           };
           response = await GoogleDeepmindModelRouter(reqModel);
-
           break;
         case "grok":
           reqModel = {
@@ -117,15 +105,14 @@ modelRouter.post(
       }
   
       if (response.success) {
-        const amountDebited = response.usage.total_token;
-        const creditUsed = Number(amountDebited) * (0.0000001);
-        const updatedCredit = Number(user_credit.creditAmount) - creditUsed
-        console.log("Credit Used : ", creditUsed);
-        console.log("Credit Used : ", updatedCredit);
-
-        const UpdateUserCredit = prisma.credit.update({ data : { creditAmount : updatedCredit.toString() } , where : { userId : userId }});
-
-        
+        const updatedCredit = Number(user_credit.creditAmount) - CreditController(Number(response.usage.input_token), Number(response.usage.output_token), aiModel);
+        console.log("Credit Used : ", CreditController(Number(response.usage.input_token), Number(response.usage.output_token), aiModel));
+        console.log("Updated Credit : ", updatedCredit);
+        await prisma.credit.update({ data : { creditAmount : updatedCredit.toString() } , where : { userId : userId }});
+        const createUsage = await prisma.usage.create({ data : { usageContent : JSON.stringify(response), creditId : user_credit.id }});
+        if(createUsage){
+          console.log("Usage Created Successfully");
+        }
         return res.status(200).json({
           response
         });
@@ -136,9 +123,6 @@ modelRouter.post(
           response
         });
       }
-
-      console.log(reqModel);
-      console.log("The Resposne : ", response);
 
       if (!reqModel) {
         return res.status(400).json({

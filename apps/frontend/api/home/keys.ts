@@ -7,10 +7,16 @@ interface GenerateApiKeyResposne {
     success : boolean
 }
 
+interface SuccessAPIResponse{
+    message : string;
+    apiKey? : ApiKey[]
+    success : boolean;
+}
+
 export const GenerateApiKey = async (
     title : string
-) : Promise<GenerateApiKeyResposne>=> {
-    let genApiKeyResult : GenerateApiKeyResposne ;
+) : Promise<GenerateApiKeyResposne> => {
+    let genApiKeyResult : GenerateApiKeyResposne;
     try{
         const res = await fetch(`${BACKEDNURL}/api/v1/user/generate-api`, {
             method : "POST",
@@ -49,11 +55,6 @@ export const GenerateApiKey = async (
 }
 
 
-interface SuccessAPIResponse{
-    message : string;
-    apiKey? : ApiKey[]
-    success : boolean;
-}
 export const GetUserAPIkey = async () : Promise<SuccessAPIResponse> => {
     let result : SuccessAPIResponse; 
     try{
