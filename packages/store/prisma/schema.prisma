@@ -42,9 +42,12 @@ model Credit {
 }
 
 model Usage {
-  id              String          @id @default(uuid())  
+  id              String          @id @default(uuid()) 
+  modelname       String
+  modelversion    String 
   usageContent    String
-  creditId        String          
+  creditId        String   
+  credit_used     String          @default("0")       
   credit          Credit          @relation(fields: [creditId], references: [id])   
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt   
