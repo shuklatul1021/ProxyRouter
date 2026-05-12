@@ -6,15 +6,8 @@ export async function VerifyApiMiddleware(req : Request , res : Response, next :
         const apiTokenHeader = req.get('x-api-key') as string;
         console.log("Token Get" , apiTokenHeader);
         const userId = req.userId;
-    
-    
-        const verifyToken = await prisma.apiKey.findFirst({
-            where : {
-                api_token : apiTokenHeader,
-                userId : userId
-            }
-        });
 
+        const verifyToken = await prisma.apiKey.findFirst({ where : { api_token : apiTokenHeader, userId : userId }});
 
         if (!verifyToken) {
             return res.status(401).json({ error: 'Invalid authorization Api Key.' , success : false });

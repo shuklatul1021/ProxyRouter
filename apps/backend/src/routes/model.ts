@@ -105,11 +105,15 @@ modelRouter.post(
       }
   
       if (response.success) {
-        const updatedCredit = Number(user_credit.creditAmount) - CreditController(Number(response.usage.input_token), Number(response.usage.output_token), aiModel);
-        console.log("Credit Used : ", CreditController(Number(response.usage.input_token), Number(response.usage.output_token), aiModel));
+        const userCredit = CreditController(Number(response.usage.input_token), Number(response.usage.output_token), aiModel)
+        const updatedCredit = Number(user_credit.creditAmount) - userCredit;
+        console.log("Credit Used : ", userCredit);
         console.log("Updated Credit : ", updatedCredit);
         await prisma.credit.update({ data : { creditAmount : updatedCredit.toString() } , where : { userId : userId }});
-        const createUsage = await prisma.usage.create({ data : { usageContent : JSON.stringify(response), creditId : user_credit.id }});
+        const createUsage = await prisma.usage.create({ 
+          data : { usageContent : JSON.stringify(response), creditId : user_credit.id, modelname : aiModel, modelversion : String(reqModel.modelVersion), credit_used : String(userCredit)}
+        });
+
         if(createUsage){
           console.log("Usage Created Successfully");
         }

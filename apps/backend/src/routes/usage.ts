@@ -20,8 +20,20 @@ usageRouter.get("/get-usage", UserMiddleware ,async ( req, res ) => {
                 success : false
             })
         }
+        const formattedUsage = usage.map((item) => {
+            const response = JSON.parse(item.usageContent);
+            return {
+                id : item.id,
+                modelname : item.modelname,
+                modelversion : item.modelversion,
+                credit_used : item.credit_used,
+                createdAt : item.createdAt,
+                updatedAt : item.updatedAt,
+                total_token : response.usage.total_token
+            }
+        });
         return res.status(200).json({
-            usage,
+            usage : formattedUsage,
             message : "Usage Fetched Successfully",
             success : true
         })

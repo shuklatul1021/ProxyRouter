@@ -128,6 +128,7 @@ userRouter.get("/get-user", UserMiddleware, async (req, res) => {
     const userId = req.userId;
     const getUser = await prisma.user.findFirst({
       where: { id: userId },
+      include: { credit: true },
     });
 
     if (!getUser) {
