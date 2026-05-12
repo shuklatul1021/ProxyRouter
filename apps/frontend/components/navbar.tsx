@@ -25,14 +25,14 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <header className="fixed left-0 right-0 top-0 z-50 border-b border-white/10 bg-black/80 backdrop-blur-xl">
+    <header className="fixed left-0 right-0 top-0 z-50 border-b border-[#262626] bg-[#000000]/80 backdrop-blur-xl">
       <nav className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md border border-white/15 bg-white/[0.06] text-white">
+          <div className="flex h-8 w-8 items-center justify-center rounded-md border border-[#262626] bg-[#141414] text-[#ededef]">
             <Network className="h-5 w-5" />
           </div>
-          <span className="text-xl font-semibold tracking-tight text-white">
-            OpenRouter
+          <span className="text-xl font-semibold tracking-tight text-[#ededef]">
+            ProxyRouter
           </span>
         </Link>
 

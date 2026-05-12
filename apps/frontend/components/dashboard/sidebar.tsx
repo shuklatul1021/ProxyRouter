@@ -28,6 +28,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { useState } from "react";
+import { UserInterface } from "@/api/auth/auth";
 
 const navigation = [
   { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
@@ -42,19 +43,19 @@ const secondaryNavigation = [
   { name: "Help & Support", href: "/support", icon: HelpCircle },
 ];
 
-function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
+function SidebarContent({ onNavigate, user }: { onNavigate?: () => void, user : UserInterface | null}) {
   const pathname = usePathname();
 
   return (
     <div className="flex h-full flex-col">
       {/* Logo */}
-      <div className="flex h-16 items-center border-b border-white/10 px-6">
+      <div className="flex h-16 items-center border-b border-[#262626] px-6">
         <Link href="/" className="flex items-center gap-2" onClick={onNavigate}>
-          <div className="flex h-8 w-8 items-center justify-center rounded-md border border-white/15 bg-white/[0.06] text-white">
+          <div className="flex h-8 w-8 items-center justify-center rounded-md border border-[#262626] bg-[#141414] text-[#ededef]">
             <Network className="h-5 w-5" />
           </div>
-          <span className="text-lg font-semibold text-white">
-            OpenRouter
+          <span className="text-lg font-semibold text-[#ededef]">
+            ProxyRouter
           </span>
         </Link>
       </div>
@@ -113,7 +114,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
               Add more
             </Link>
           </div>
-          <p className="mt-1 text-2xl font-semibold text-white">$24.50</p>
+          <p className="mt-1 text-2xl font-semibold text-white">${user?.credit.creditAmount || "0"}</p>
           <p className="text-xs text-zinc-500">
             ~2.4M tokens remaining
           </p>
@@ -123,14 +124,14 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   );
 }
 
-export function DashboardSidebar() {
+export function DashboardSidebar({ user } : { user : UserInterface | null}) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
       {/* Desktop Sidebar */}
       <aside className="fixed left-0 top-0 z-40 hidden h-screen w-64 border-r border-white/10 bg-black lg:block">
-        <SidebarContent />
+        <SidebarContent user={user || null} />
       </aside>
 
       {/* Mobile Sidebar */}
@@ -145,14 +146,14 @@ export function DashboardSidebar() {
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className="w-64 border-white/10 bg-black p-0">
-          <SidebarContent onNavigate={() => setIsOpen(false)} />
+          <SidebarContent onNavigate={() => setIsOpen(false)} user={user || null} />
         </SheetContent>
       </Sheet>
     </>
   );
 }
 
-export function DashboardHeader() {
+export function DashboardHeader({ user } : { user : UserInterface | null}) {
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-white/10 bg-black/80 px-6 backdrop-blur-xl lg:justify-end">
       {/* Mobile spacer for hamburger menu */}
@@ -165,10 +166,10 @@ export function DashboardHeader() {
             <Avatar className="h-8 w-8 border border-white/15">
               <AvatarImage src="/avatar.png" alt="User" />
               <AvatarFallback className="bg-white text-black">
-                JD
+                {user?.name[0]}
               </AvatarFallback>
             </Avatar>
-            <span className="hidden sm:inline">John Doe</span>
+            <span className="hidden sm:inline">{user?.name}</span>
             <ChevronDown className="h-4 w-4 text-zinc-500" />
           </Button>
         </DropdownMenuTrigger>
@@ -178,9 +179,9 @@ export function DashboardHeader() {
         >
           <DropdownMenuLabel>
             <div className="flex flex-col">
-              <span>John Doe</span>
+              <span>{user?.name}</span>
               <span className="text-sm font-normal text-zinc-500">
-                john@example.com
+                {user?.email}
               </span>
             </div>
           </DropdownMenuLabel>

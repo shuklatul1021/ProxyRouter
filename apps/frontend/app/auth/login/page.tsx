@@ -51,49 +51,49 @@ export default function LoginPage() {
       <div className="relative grid w-full max-w-5xl items-center gap-8 lg:grid-cols-[0.92fr_1.08fr]">
         <section className="hidden lg:block">
           <Link href="/" className="inline-flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-md border border-white/15 bg-white/[0.06] text-white">
+            <div className="flex h-11 w-11 items-center justify-center rounded-md border border-[#262626] bg-[#141414] text-white">
               <Network className="h-6 w-6" />
             </div>
-            <span className="text-xl font-semibold text-white">
-              OpenRouter
+            <span className="text-xl font-semibold text-[#ededef]">
+              ProxyRouter
             </span>
           </Link>
 
-          <h1 className="mt-10 max-w-lg text-5xl font-semibold leading-tight tracking-tight text-white">
+          <h1 className="mt-10 max-w-lg text-5xl font-semibold leading-tight tracking-tight text-[#ededef]">
             Return to your model routing console.
           </h1>
-          <p className="mt-5 max-w-md text-base leading-7 text-zinc-400">
+          <p className="mt-5 max-w-md text-base leading-7 text-[#737373]">
             Review credits, API activity, provider fallback, and scoped keys
             from a single black workspace.
           </p>
 
-          <div className="mt-8 max-w-sm rounded-md border border-white/10 bg-white/[0.04] p-5">
-            <p className="text-xs uppercase tracking-[0.16em] text-zinc-500">
+          <div className="mt-8 max-w-sm rounded-md border border-[#262626] bg-[#0a0a0a] p-5">
+            <p className="text-xs uppercase tracking-[0.16em] text-[#737373]">
               Today&apos;s requests
             </p>
             <div className="mt-4 flex items-end justify-between">
               <div>
-                <p className="text-3xl font-semibold text-white">12,847</p>
-                <p className="text-sm text-emerald-300">99.95% routed</p>
+                <p className="text-3xl font-semibold text-[#ededef]">12,847</p>
+                <p className="text-sm text-[#26a69a]">99.95% routed</p>
               </div>
-              <div className="flex h-14 w-14 items-center justify-center rounded-full border border-white/15 bg-white/[0.06]">
-                <Network className="h-7 w-7 text-white" />
+              <div className="flex h-14 w-14 items-center justify-center rounded-full border border-[#262626] bg-[#141414]">
+                <Network className="h-7 w-7 text-[#ededef]" />
               </div>
             </div>
           </div>
         </section>
 
-        <Card className="router-card border-white/10 bg-zinc-950/90 text-white shadow-2xl">
+        <Card className="router-card text-white">
           <CardHeader className="text-center">
             <Link
               href="/"
-              className="mx-auto flex h-12 w-12 items-center justify-center rounded-md border border-white/15 bg-white/[0.06] text-white lg:hidden"
+              className="mx-auto flex h-12 w-12 items-center justify-center rounded-md border border-[#262626] bg-[#141414] text-[#ededef] lg:hidden"
             >
               <Network className="h-6 w-6" />
             </Link>
             <CardTitle className="mt-3 text-2xl">Welcome back</CardTitle>
-            <CardDescription className="text-zinc-400">
-              Sign in to your OpenRouter account
+            <CardDescription className="text-[#737373]">
+              Sign in to your ProxyRouter account
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -101,7 +101,7 @@ export default function LoginPage() {
               <div className="grid gap-2">
                 <Button
                   variant="outline"
-                  className="w-full gap-2 border-zinc-700 bg-black/40 text-zinc-100 hover:bg-zinc-900"
+                  className="w-full gap-2 border-[#262626] bg-[#0a0a0a] text-[#ededef] hover:bg-[#141414] hover:border-[#333333]"
                   onClick={() => handleOAuthLogin("google")}
                   disabled={isLoading}
                 >
@@ -127,7 +127,7 @@ export default function LoginPage() {
                 </Button>
                 <Button
                   variant="outline"
-                  className="w-full gap-2 border-zinc-700 bg-black/40 text-zinc-100 hover:bg-zinc-900"
+                  className="w-full gap-2 border-[#262626] bg-[#0a0a0a] text-[#ededef] hover:bg-[#141414] hover:border-[#333333]"
                   onClick={() => handleOAuthLogin("github")}
                   disabled={isLoading}
                 >

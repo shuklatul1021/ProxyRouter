@@ -24,6 +24,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { useUser } from "../providers/UserProvider";
 
 const stats = [
   {
@@ -102,31 +103,33 @@ const providerMix = [
 ];
 
 export default function DashboardPage() {
+  const { user } = useUser();
+  console.log("Dashboard User: ", user);
   return (
     <div className="space-y-8">
-      <section className="relative overflow-hidden rounded-md border border-white/10 bg-black p-6 shadow-2xl lg:p-8">
-        <div className="router-grid pointer-events-none absolute inset-0 opacity-60" />
+      <section className="relative overflow-hidden rounded-md border border-[#262626] bg-[#0a0a0a] p-6 lg:p-8">
+        <div className="router-grid pointer-events-none absolute inset-0 opacity-40" />
         <div className="relative grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
           <div>
-            <Badge className="border-white/15 bg-white/[0.06] text-zinc-200">
+            <Badge className="border-[#262626] bg-[#141414] text-[#ededef]">
               <ShieldCheck className="mr-1.5 h-3.5 w-3.5" />
               Routing overview
             </Badge>
             <h1 className="mt-5 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-              Welcome back, John.
+              Welcome back, {user?.name ?? "John"}.
             </h1>
             <p className="mt-2 max-w-2xl text-zinc-400">
               Monitor model routing, API keys, credits, provider fallback, and
-              request analytics from your OpenRouter console.
+              request analytics from your ProxyRouter console.
             </p>
           </div>
 
-          <div className="min-w-64 rounded-md border border-white/10 bg-white/[0.04] p-5">
+          <div className="min-w-64 rounded-md border border-[#262626] bg-[#0a0a0a] p-5">
             <div className="flex items-center justify-between">
               <span className="text-sm text-zinc-300">Available credits</span>
               <WalletCards className="h-5 w-5 text-white" />
             </div>
-            <p className="mt-3 text-4xl font-semibold text-white">$24.50</p>
+            <p className="mt-3 text-4xl font-semibold text-white">${user?.credit.creditAmount?.toFixed(2)}</p>
             <p className="mt-1 text-sm text-emerald-300">
               Auto fallback: enabled
             </p>
@@ -186,10 +189,10 @@ export default function DashboardPage() {
               {recentActivity.map((activity) => (
                 <div
                   key={`${activity.model}-${activity.time}`}
-                  className="flex items-center justify-between gap-4 border-b border-white/10 pb-4 last:border-0 last:pb-0"
+                  className="flex items-center justify-between gap-4 border-b border-[#262626] pb-4 last:border-0 last:pb-0"
                 >
                   <div className="flex min-w-0 items-center gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-white/10 bg-white/[0.04]">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-[#262626] bg-[#141414]">
                       <Network className="h-5 w-5 text-zinc-200" />
                     </div>
                     <div className="min-w-0">
@@ -197,8 +200,8 @@ export default function DashboardPage() {
                         {activity.model}
                       </p>
                       <p className="text-sm text-zinc-500">
-                        {activity.provider} ·{" "}
-                        {activity.tokens.toLocaleString()} tokens
+                        {activity.provider} · {activity.tokens.toLocaleString()}{" "}
+                        tokens
                       </p>
                     </div>
                   </div>
@@ -235,8 +238,11 @@ export default function DashboardPage() {
             </Link>
           </CardHeader>
           <CardContent>
-            <div className="mb-6 rounded-md border border-white/10 bg-black/45 p-4 font-mono text-xs leading-6 text-zinc-300">
-              <p>route = [&quot;openai&quot;, &quot;anthropic&quot;, &quot;google&quot;]</p>
+            <div className="mb-6 rounded-md border border-[#262626] bg-[#0a0a0a] p-4 font-mono text-xs leading-6 text-[#a1a1aa]">
+              <p>
+                route = [&quot;openai&quot;, &quot;anthropic&quot;,
+                &quot;google&quot;]
+              </p>
               <p>fallback = true</p>
               <p>data_retention = &quot;disabled&quot;</p>
             </div>
@@ -270,7 +276,7 @@ export default function DashboardPage() {
             <Link href="/dashboard/keys">
               <Button
                 variant="outline"
-                className="h-28 w-full flex-col gap-2 rounded-md border-zinc-700 bg-black/35 text-zinc-100 hover:bg-zinc-900"
+                className="h-28 w-full flex-col gap-2 rounded-md border-[#262626] bg-[#0a0a0a] text-[#ededef] hover:bg-[#141414] hover:border-[#333333]"
               >
                 <Key className="h-6 w-6 text-zinc-100" />
                 <span>Create API Key</span>
@@ -279,7 +285,7 @@ export default function DashboardPage() {
             <Link href="/dashboard/credits">
               <Button
                 variant="outline"
-                className="h-28 w-full flex-col gap-2 rounded-md border-zinc-700 bg-black/35 text-zinc-100 hover:bg-zinc-900"
+                className="h-28 w-full flex-col gap-2 rounded-md border-[#262626] bg-[#0a0a0a] text-[#ededef] hover:bg-[#141414] hover:border-[#333333]"
               >
                 <CreditCard className="h-6 w-6 text-zinc-100" />
                 <span>Add Credits</span>
@@ -288,7 +294,7 @@ export default function DashboardPage() {
             <Link href="/docs">
               <Button
                 variant="outline"
-                className="h-28 w-full flex-col gap-2 rounded-md border-zinc-700 bg-black/35 text-zinc-100 hover:bg-zinc-900"
+                className="h-28 w-full flex-col gap-2 rounded-md border-[#262626] bg-[#0a0a0a] text-[#ededef] hover:bg-[#141414] hover:border-[#333333]"
               >
                 <Code2 className="h-6 w-6 text-zinc-100" />
                 <span>View Docs</span>
@@ -297,7 +303,7 @@ export default function DashboardPage() {
             <Link href="/dashboard/usage">
               <Button
                 variant="outline"
-                className="h-28 w-full flex-col gap-2 rounded-md border-zinc-700 bg-black/35 text-zinc-100 hover:bg-zinc-900"
+                className="h-28 w-full flex-col gap-2 rounded-md border-[#262626] bg-[#0a0a0a] text-[#ededef] hover:bg-[#141414] hover:border-[#333333]"
               >
                 <GitBranch className="h-6 w-6 text-zinc-100" />
                 <span>Routing Report</span>

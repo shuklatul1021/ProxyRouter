@@ -77,7 +77,7 @@ export default function SignupPage() {
               <Network className="h-6 w-6" />
             </div>
             <span className="text-xl font-semibold text-white">
-              OpenRouter
+              ProxyRouter
             </span>
           </Link>
 
@@ -101,7 +101,7 @@ export default function SignupPage() {
           </ul>
         </section>
 
-        <Card className="router-card border-white/10 bg-zinc-950/90 text-white shadow-2xl">
+        <Card className="router-card text-white">
           <CardHeader className="text-center">
             <Link
               href="/"

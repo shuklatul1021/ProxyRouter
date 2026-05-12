@@ -71,31 +71,55 @@ export const LoginUser = async (
     }
 }
 
-interface UserResponseInfo{
+export type UserInterface = {
+    name : string;
+    email : string;
+    companyName : string;
+    username : string;
+    credit : {
+        id : string;
+        creditAmount : number;
+        userId : string;
+        createdAt : string;
+        updatedAt : string
+    }
+}
+
+interface UserResponseInfo {
     message : string;
-    user? : string;
+    user? : UserInterface;
     success : boolean;
 }
 
-export  const getUserInfo = async (
-) : Promise<UserResponseInfo> =>{
+export const getUserInfo = async (
+) : Promise<UserResponseInfo> => {
     let getUserResult : UserResponseInfo;
     try{
         const res = await fetch(`${BACKEDNURL}/api/v1/auth/get-info`, {
             method : "GET",
-            headers : {
-                token : localStorage.getItem("token") || "",
-            }
+            headers : { token : localStorage.getItem("token") || "" }
         });
         const json = await res.json();
         if(res.ok){
             getUserResult = {
                 message : json.message,
-                user : json.user,
+                user : {
+                    name : json.user.name,
+                    email : json.user.email,
+                    companyName : json.user.companyName,
+                    username : json.user.username,
+                    credit : {
+                        id : json.user.credit.id,
+                        creditAmount : Number(json.user.credit.creditAmount),
+                        userId : json.user.credit.userId,
+                        createdAt : json.user.credit.createdAt,
+                        updatedAt : json.user.credit.updatedAt
+                    }
+                },
                 success : true
             }
             return getUserResult;
-        }else{
+        } else {
             getUserResult = {
                 message : json.message,
                 user : json.user,
