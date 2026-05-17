@@ -1,10 +1,10 @@
+import { verifyClaudeModelVersion, verifyDeepseekModelVersion, verifyGoogleDeepmindModelVersion, verifyGPTModelVersion, verifyGrokModelVersion } from "../controller/modelversion.controller.js";
 import type { ErrorResponseStucture, RouterSchema, SuccessResponseStucture } from "../types/type.js";
 import { OpenAI_Model_Implementation } from "./chatgpt/chagpt.js";
 import { Claude_Model_Implementation } from "./claude/claude.js";
 import { Deepseek_Model_Implementation } from "./deepseek/deepseek.js";
 import { Gemini_Model_Implementation } from "./gemini/gemini.js";
 import { Grok_Model_Implementation } from "./grok/grok.js";
-
 
 export async function ChatGptModelRouter( model : RouterSchema) : Promise<SuccessResponseStucture | ErrorResponseStucture>{
     let response : SuccessResponseStucture | ErrorResponseStucture;
@@ -20,12 +20,7 @@ export async function ChatGptModelRouter( model : RouterSchema) : Promise<Succes
         return response;
     }
 
-    if(
-        model.modelVersion === 'gpt-5.4' || 
-        model.modelVersion === 'gpt-5' || 
-        model.modelVersion === 'gpt-4.1' ||
-        model.modelVersion === 'gpt-4o'
-    ){
+    if(verifyGPTModelVersion(model.modelVersion as string)){
         const response = await OpenAI_Model_Implementation(model);
         return response; 
     }
@@ -40,6 +35,7 @@ export async function ChatGptModelRouter( model : RouterSchema) : Promise<Succes
     return response;
     
 }
+
 export async function ClaudeModelRouter( model : RouterSchema) : Promise<SuccessResponseStucture | ErrorResponseStucture>{
     let response : SuccessResponseStucture | ErrorResponseStucture;
     if(!model.userPrompt){
@@ -53,13 +49,7 @@ export async function ClaudeModelRouter( model : RouterSchema) : Promise<Success
         }
         return response;
     }
-    if(
-        model.modelVersion === 'claude-3-opus' || 
-        model.modelVersion === 'claude-3-sonnet' || 
-        model.modelVersion === 'claude-3-haiku' ||
-        model.modelVersion === 'claude-3.5-sonnet' ||
-        model.modelVersion === 'claude-3.5-haiku'
-    ){
+    if(verifyClaudeModelVersion(model.modelVersion as string)){
         const response = await Claude_Model_Implementation(model);
         return response; 
     }
@@ -86,11 +76,7 @@ export async function DeepseekModelRouter( model : RouterSchema)  : Promise<Succ
         }
         return response;
     }
-    if(
-        model.modelVersion === 'deepseek-chat' || 
-        model.modelVersion === 'deepseek-coder' || 
-        model.modelVersion === 'deepseek-coder-v2' 
-    ){
+    if(verifyDeepseekModelVersion(model.modelVersion as string)){
         const response = await Deepseek_Model_Implementation(model);
         if(response){
             return response; 
@@ -106,6 +92,7 @@ export async function DeepseekModelRouter( model : RouterSchema)  : Promise<Succ
     }
     return response;
 }
+
 export async function GoogleDeepmindModelRouter( model : RouterSchema) : Promise<SuccessResponseStucture | ErrorResponseStucture> {
     let response : SuccessResponseStucture | ErrorResponseStucture ;
     if(!model.userPrompt){
@@ -119,14 +106,7 @@ export async function GoogleDeepmindModelRouter( model : RouterSchema) : Promise
         }
         return response;
     }
-    if(
-        model.modelVersion === 'gemini-1.0-pro' || 
-        model.modelVersion === 'gemini-1.5-pro' || 
-        model.modelVersion === 'gemini-1.5-flash' ||
-        model.modelVersion === 'gemini-2.0-pro' ||
-        model.modelVersion === 'gemini-2.0-flash' ||
-        model.modelVersion === 'gemini-3.1-flash-lite-preview' 
-    ){
+    if(verifyGoogleDeepmindModelVersion(model.modelVersion as string)){
         const response = await Gemini_Model_Implementation(model);
         return response; 
     }
@@ -153,11 +133,7 @@ export async function GrokModelRouter( model : RouterSchema)  : Promise<SuccessR
         }
         return response;
     }
-    if(
-        model.modelVersion === 'grok-1' || 
-        model.modelVersion === 'grok-1.5' || 
-        model.modelVersion === 'grok-beta'
-    ){
+    if(verifyGrokModelVersion(model.modelVersion as string)){
         const response = await Grok_Model_Implementation(model);
         return response; 
     }

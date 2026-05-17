@@ -11,9 +11,9 @@ export enum Model{
 }
 
 export interface RouterSchema {
-    userPrompt : String;
-    systemPrompt? : String;
-    modelVersion : String;
+    userPrompt : string;
+    systemPrompt? : string;
+    modelVersion : string;
 }
 
 export interface SuccessResponseStucture {

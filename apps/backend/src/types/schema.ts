@@ -13,8 +13,19 @@ const loginSchema = z.object({
     password : z.string().min(6)
 });
 
+const message = z.object({
+    role : z.enum(["user","system"]),
+    message : z.string()
+})
+
+const ChatFormattedSchema = z.object({
+    model : z.string(),
+    message : z.array(message)
+})
+
 
 export {
     signupSchema,
-    loginSchema
+    loginSchema,
+    ChatFormattedSchema
 }

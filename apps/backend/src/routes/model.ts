@@ -17,6 +17,7 @@ import { VerifyApiMiddleware } from "../middleware/verifyAPI.js";
 import { prisma } from "@repo/store/client";
 import { id } from "zod/locales";
 import { CreditController } from "../controller/credit.controller.js";
+import { ChatFormattedSchema } from "../types/schema.js";
 const modelRouter = Router();
 
 modelRouter.post(
@@ -27,8 +28,8 @@ modelRouter.post(
     try {
       const aiModel = req.params.model;
       const userId = req.userId;
-      const { userPrompt, systemPrompt, modelVersion } = req.body;
-      if (!userPrompt && !systemPrompt && !aiModel && !modelVersion) {
+      const result = ChatFormattedSchema.safeParse(req.body);
+      if (!result.success) {
         return res.status(403).json({
           message: "Require More Data , Go To Documentation For More Info",
           success: false,
@@ -55,44 +56,44 @@ modelRouter.post(
       switch (aiModel) {
         case "chatgpt":
           reqModel = {
-            systemPrompt: systemPrompt,
-            userPrompt: userPrompt,
-            modelVersion: modelVersion,
+            userPrompt: result.data.message[0]?.role == "user" ? result.data.message[0].message : "",
+            systemPrompt: result.data.message[1]?.role == "system" ? result.data.message[1].message : "",
+            modelVersion: result.data.model,
           };
           response = await ChatGptModelRouter(reqModel);
           break;
 
         case "claude":
           reqModel = {
-            systemPrompt: systemPrompt,
-            userPrompt: userPrompt,
-            modelVersion: modelVersion,
+            userPrompt: result.data.message[0]?.role == "user" ? result.data.message[0].message : "",
+            systemPrompt: result.data.message[1]?.role == "system" ? result.data.message[1].message : "",
+            modelVersion: result.data.model,
           };
           response = await ClaudeModelRouter(reqModel);
           break;
 
         case "deepseek":
           reqModel = {
-            systemPrompt: systemPrompt,
-            userPrompt: userPrompt,
-            modelVersion: modelVersion,
+            userPrompt: result.data.message[0]?.role == "user" ? result.data.message[0].message : "",
+            systemPrompt: result.data.message[1]?.role == "system" ? result.data.message[1].message : "",
+            modelVersion: result.data.model,
           };
           response = await DeepseekModelRouter(reqModel);
           break;
 
         case "googledeepmind":
           reqModel = {
-            systemPrompt: systemPrompt,
-            userPrompt: userPrompt,
-            modelVersion: modelVersion,
+            userPrompt: result.data.message[0]?.role == "user" ? result.data.message[0].message : "",
+            systemPrompt: result.data.message[1]?.role == "system" ? result.data.message[1].message : "",
+            modelVersion: result.data.model,
           };
           response = await GoogleDeepmindModelRouter(reqModel);
           break;
         case "grok":
           reqModel = {
-            systemPrompt: systemPrompt,
-            userPrompt: userPrompt,
-            modelVersion: modelVersion,
+            userPrompt: result.data.message[0]?.role == "user" ? result.data.message[0].message : "",
+            systemPrompt: result.data.message[1]?.role == "system" ? result.data.message[1].message : "",
+            modelVersion: result.data.model,
           };
           response = await GrokModelRouter(reqModel);
           break;
