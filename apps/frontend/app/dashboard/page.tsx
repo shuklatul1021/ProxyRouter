@@ -129,7 +129,7 @@ export default function DashboardPage() {
               <span className="text-sm text-zinc-300">Available credits</span>
               <WalletCards className="h-5 w-5 text-white" />
             </div>
-            <p className="mt-3 text-4xl font-semibold text-white">${user?.credit.creditAmount?.toFixed(2)}</p>
+            <p className="mt-3 text-4xl font-semibold text-white">${user?.credit.creditAmount}</p>
             <p className="mt-1 text-sm text-emerald-300">
               Auto fallback: enabled
             </p>

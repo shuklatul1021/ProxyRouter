@@ -1,12 +1,9 @@
-    "name": "Atul ",
-    "email": "atulshukla1021@gmail.com",
-    "companyName": "Grind",
-    "username": "atul1021",
-    "credit": {
-        "id": "815fd560-30d0-491f-8248-7674878e09d2",
-        "creditAmount": "0",
-        "userId": "77e36473-b531-40ac-b598-0e9002556f9e",
-        "createdAt": "2026-05-11T07:09:34.143Z",
-        "updatedAt": "2026-05-11T07:09:34.143Z"
-    }
-    
+  {
+            "id": "33260851-d9a5-41f9-866a-a148a030b3ed",
+            "modelname": "googledeepmind",
+            "modelversion": "gemini-3.1-flash-lite-preview",
+            "credit_used": "0.004692",
+            "createdAt": "2026-05-17T10:20:28.600Z",
+            "updatedAt": "2026-05-17T10:20:28.600Z",
+            "total_token": "790"
+        }

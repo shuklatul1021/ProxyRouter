@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -30,6 +30,7 @@ import {
   Zap,
   Clock,
 } from "lucide-react";
+import { UsageResponse, userUsage } from "@/api/home/usage";
 
 const usageStats = {
   totalRequests: 12847,
@@ -139,6 +140,38 @@ const recentRequests = [
 export default function UsagePage() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [timeRange, setTimeRange] = useState("7d");
+  const [usage, setUserUsage] = useState<UsageResponse[] | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  async function getUserUsage(){
+    setLoading(true);
+    const usage = await userUsage();
+    if(usage){
+      setUserUsage(usage);
+    }else{
+      console.log("Error While getting The Usage")
+    }
+    setLoading(false);
+  }
+
+  console.log("Usage", usage);
+
+  useEffect(()=> {
+    if(!usage){
+      getUserUsage();
+    }
+  }, []);
+
+
+
+  if(loading){
+    return (
+      <div className="flex h-96 w-full items-center justify-center">
+        <Activity className="mr-2 h-4 w-4 animate-spin" />
+        Loading usage data...
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-8">
@@ -173,7 +206,7 @@ export default function UsagePage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {usageStats.totalRequests.toLocaleString()}
+              {usage?.length}
             </div>
             <div className="flex items-center gap-1 text-xs">
               <TrendingUp className="h-3 w-3 text-accent" />
@@ -191,7 +224,7 @@ export default function UsagePage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {(usageStats.totalTokens / 1000000).toFixed(2)}M
+              {usage?.map((x) => Number(x.total_token)).reduce((acc, curr) => acc + curr, 0)}
             </div>
             <div className="flex items-center gap-1 text-xs">
               <TrendingUp className="h-3 w-3 text-accent" />
@@ -209,7 +242,7 @@ export default function UsagePage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              ${usageStats.totalCost.toFixed(2)}
+              ${usage?.map((x) => Number(x.credit_used)).reduce((acc, curr) => acc + curr, 0)}
             </div>
             <div className="flex items-center gap-1 text-xs">
               <TrendingDown className="h-3 w-3 text-accent" />
@@ -254,26 +287,26 @@ export default function UsagePage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
-                {modelUsage.map((model) => (
-                  <div key={model.model} className="space-y-2">
+                {usage?.map((model) => (
+                  <div key={model.id} className="space-y-2">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <span className="font-medium">{model.model}</span>
-                        <Badge variant="secondary">{model.provider}</Badge>
+                        <span className="font-medium">{model.modelversion}</span>
+                        <Badge variant="secondary">{model.modelname}</Badge>
                       </div>
                       <div className="text-right">
                         <span className="font-medium">
-                          ${model.cost.toFixed(2)}
+                          ${model.credit_used}
                         </span>
                         <span className="ml-2 text-sm text-muted-foreground">
-                          ({model.percentage}%)
+                          ({model.total_token} tokens)
                         </span>
                       </div>
                     </div>
-                    <Progress value={model.percentage} className="h-2" />
+                    <Progress value={Number(model.total_token)} className="h-2" />
                     <div className="flex justify-between text-sm text-muted-foreground">
-                      <span>{model.requests.toLocaleString()} requests</span>
-                      <span>{(model.tokens / 1000).toFixed(1)}K tokens</span>
+                      <span>{""} requests</span>
+                      <span>{(Number(model.total_token) / 1000).toFixed(1)}K tokens</span>
                     </div>
                   </div>
                 ))}
